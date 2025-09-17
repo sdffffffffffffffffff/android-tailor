@@ -51,3 +51,22 @@ repo init -u https://android.googlesource.com/platform/manifest -b master --no-c
 - Manual Repo installation ensures you have the latest version independently of the init process.
 
 If issues persist, check your Python version (Repo requires Python 3.6+) and ensure certificates are up to date (`sudo update-ca-certificates` on Ubuntu/Debian).
+
+
+
+repo init -u https://github.com/LineageOS/android.git -b lineage-20.0 --git-lfs
+repo sync build/make
+
+
+
+
+Pre‑Clone the git-repo Project
+If you can download from a browser or another machine:
+
+bash
+git clone https://gerrit-googlesource.proxy.ustclug.org/git-repo .repo/repo
+Then rerun:
+
+bash
+repo init -u https://github.com/LineageOS/android.git -b lineage-20.0 --git-lfs
+This skips the bootstrap fetch entirely.
