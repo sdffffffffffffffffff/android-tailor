@@ -1,0 +1,53 @@
+To resolve the issue with `repo init` failing due to network connectivity problems, follow these steps:
+
+### 1. **Use `--no-clone-bundle` Option**
+Skip the bundle download (which is causing the connection error) and fetch directly from Git:
+```bash
+rm -rf .repo   # Clean up any partial initialization
+repo init -u https://android.googlesource.com/platform/manifest -b master --no-clone-bundle
+```
+
+### 2. **Ensure Network Accessibility**
+Verify you can access `gerrit.googlesource.com`:
+```bash
+curl -v https://gerrit.googlesource.com/git-repo/clone.bundle
+```
+If this fails, check:
+- **Proxy Settings**: If behind a proxy, configure Git and curl to use it:
+  ```bash
+  export HTTP_PROXY=http://<proxy>:<port>
+  export HTTPS_PROXY=http://<proxy>:<port>
+  git config --global http.proxy http://<proxy>:<port>
+  ```
+- **Firewall/Network Restrictions**: Ensure your network allows outbound connections on port 443.
+
+### 3. **Use an Alternative Repo URL**
+Specify the Google Storage mirror for the Repo tool:
+```bash
+repo init -u https://android.googlesource.com/platform/manifest -b master \
+  --repo-url=https://storage.googleapis.com/git-repo-downloads/repo \
+  --no-clone-bundle
+```
+
+### 4. **Manual Repo Installation**
+Download Repo manually and add it to your PATH:
+```bash
+mkdir -p ~/.bin
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
+chmod a+rx ~/.bin/repo
+export PATH="$HOME/.bin:$PATH"   # Add to your shell profile (e.g., ~/.bashrc)
+```
+
+### 5. **Retry Initialization**
+After applying the above, retry:
+```bash
+rm -rf .repo
+repo init -u https://android.googlesource.com/platform/manifest -b master --no-clone-bundle
+```
+
+### Explanation:
+- The `--no-clone-bundle` bypasses the problematic bundle download.
+- Using the Google Storage URL (`storage.googleapis.com`) avoids Gerrit endpoints that might be blocked.
+- Manual Repo installation ensures you have the latest version independently of the init process.
+
+If issues persist, check your Python version (Repo requires Python 3.6+) and ensure certificates are up to date (`sudo update-ca-certificates` on Ubuntu/Debian).
