@@ -1,0 +1,9 @@
+ 1. Temporarily Disable SSL Verification (Quick Test)
+
+    Disable SSL verification for Git globally. Note that this reduces security and should only be a temporary troubleshooting step:
+    bash
+
+git config --global http.sslVerify false
+
+If it works, re-enable it later (git config --global http.sslVerify true) and investigate other solutions
+.
